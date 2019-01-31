@@ -1,3 +1,4 @@
 # Sorting Algorithms
 
-List of included algorithms:
+**List of included algorithms:**
+* bubble sort
