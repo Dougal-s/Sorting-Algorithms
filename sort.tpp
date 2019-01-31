@@ -108,6 +108,138 @@ namespace helper {
 			} while(!sorted);
 		}
 	}
+
+	namespace cocktail_shaker {
+		template <class Iterator>
+		void cocktail_shaker_sort(Iterator first, Iterator last, std::bidirectional_iterator_tag) {
+			bool sorted = true;
+			int size = 0;
+			Iterator it = first;
+			// one iteration to find the size of the input
+			for (;;++size) {
+				Iterator prev = it++;
+				if (it == last) {break;}
+				if (*it < *prev) {
+					std::swap(*it, *prev);
+					sorted = false;
+				}
+			}
+			--it;
+
+			while(!sorted) {
+				sorted = true;
+				for (int i = 0; i < size; ++i) {
+					Iterator prev = it--;
+					if (*prev < *it) {
+						std::swap(*it, *prev);
+						sorted = false;
+					}
+				}
+				if (sorted) {return;}
+				sorted = true;
+				--size;
+				for (int i = 0; i < size; ++i) {
+					Iterator prev = it++;
+					if (*it < *prev) {
+						std::swap(*it, *prev);
+						sorted = false;
+					}
+				}
+				--size;
+			}
+		}
+
+		template <class Iterator>
+		void cocktail_shaker_sort(Iterator first, Iterator last, std::random_access_iterator_tag) {
+			bool sorted;
+			int lower_bound = 0;
+			int upper_bound = std::distance(first, last)-1;
+			do {
+				sorted = true;
+				for (int i = lower_bound; i < upper_bound; ++i) {
+					if (first[i+1] < first[i]) {
+						std::swap(first[i], first[i+1]);
+						sorted = false;
+					}
+				}
+				--upper_bound;
+				if (sorted) {return;}
+				sorted = true;
+				for (int i = upper_bound; i > lower_bound; --i) {
+					if (first[i] < first[i-1]) {
+						std::swap(first[i-1], first[i]);
+						sorted = false;
+					}
+				}
+				++lower_bound;
+			} while(!sorted);
+		}
+
+		template <class Iterator, class Compare>
+		void cocktail_shaker_sort(Iterator first, Iterator last, Compare comp, std::bidirectional_iterator_tag) {
+			bool sorted = true;
+			int size = 0;
+			Iterator it = first;
+			// one iteration to find the size of the input
+			for (;;++size) {
+				Iterator prev = it++;
+				if (it == last) {break;}
+				if (comp(*it, *prev)) {
+					std::swap(*it, *prev);
+					sorted = false;
+				}
+			}
+			--it;
+
+			while(!sorted) {
+				sorted = true;
+				for (int i = 0; i < size; ++i) {
+					Iterator prev = it--;
+					if (comp(*prev, *it)) {
+						std::swap(*it, *prev);
+						sorted = false;
+					}
+				}
+				if (sorted) {return;}
+				sorted = true;
+				--size;
+				for (int i = 0; i < size; ++i) {
+					Iterator prev = it++;
+					if (comp(*it, *prev)) {
+						std::swap(*it, *prev);
+						sorted = false;
+					}
+				}
+				--size;
+			}
+		}
+
+		template <class Iterator, class Compare>
+		void cocktail_shaker_sort(Iterator first, Iterator last, Compare comp, std::random_access_iterator_tag) {
+			bool sorted;
+			int lower_bound = 0;
+			int upper_bound = std::distance(first, last)-1;
+			do {
+				sorted = true;
+				for (int i = lower_bound; i < upper_bound; ++i) {
+					if (comp(first[i+1], first[i])) {
+						std::swap(first[i], first[i+1]);
+						sorted = false;
+					}
+				}
+				--upper_bound;
+				if (sorted) {return;}
+				sorted = true;
+				for (int i = upper_bound; i > lower_bound; --i) {
+					if (comp(first[i], first[i-1])) {
+						std::swap(first[i-1], first[i]);
+						sorted = false;
+					}
+				}
+				++lower_bound;
+			} while(!sorted);
+		}
+	}
 }
 
 template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
@@ -118,4 +250,15 @@ void bubble_sort(Iterator first, Iterator last) {
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void bubble_sort(Iterator first, Iterator last, Compare comp) {
 	helper::bubble::bubble_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void cocktail_shaker_sort(Iterator first, Iterator last) {
+	helper::cocktail_shaker::cocktail_shaker_sort(first, last, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void cocktail_shaker_sort(Iterator first, Iterator last, Compare comp) {
+	helper::cocktail_shaker::cocktail_shaker_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
 }

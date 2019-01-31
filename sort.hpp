@@ -26,4 +26,11 @@ void bubble_sort(Iterator first, Iterator last);
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void bubble_sort(Iterator first, Iterator last, Compare comp);
 
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void cocktail_shaker_sort(Iterator first, Iterator last);
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void cocktail_shaker_sort(Iterator first, Iterator last, Compare comp);
+
 #include "sort.tpp"
