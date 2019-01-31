@@ -12,4 +12,11 @@ struct is_iterator<T, typename std::enable_if<!std::is_same<typename std::iterat
    static constexpr bool value = true;
 };
 
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+bool is_sorted(Iterator first, Iterator last);
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+bool is_sorted(Iterator first, Iterator last, Compare comp);
+
 #include "sort.tpp"
