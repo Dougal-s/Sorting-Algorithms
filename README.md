@@ -4,3 +4,4 @@
 * bubble sort
 * cocktail shaker sort
 * comb sort
+* gnome sort

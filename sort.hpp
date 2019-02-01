@@ -19,6 +19,7 @@ bool is_sorted(Iterator first, Iterator last);
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 bool is_sorted(Iterator first, Iterator last, Compare comp);
 
+// Bubble sorts
 
 template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void bubble_sort(Iterator first, Iterator last);
@@ -39,5 +40,13 @@ void comb_sort(Iterator first, Iterator last);
 
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void comb_sort(Iterator first, Iterator last, Compare comp);
+
+// Insertion sorts
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void gnome_sort(Iterator first, Iterator last);
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void gnome_sort(Iterator first, Iterator last, Compare comp);
 
 #include "sort.tpp"

@@ -290,6 +290,30 @@ namespace helper {
 			while(!bubble_sort(first, last, comp, 1, size)) {}
 		}
 	}
+
+	namespace gnome {
+		template <class Iterator>
+		void gnome_sort(Iterator first, Iterator last, std::bidirectional_iterator_tag) {
+			for (Iterator it = first; it != last; ++it) {
+				for (Iterator sortedIt = it; sortedIt != first;) {
+					Iterator element = sortedIt--;
+					if (!(*element < *sortedIt)) {break;}
+					std::swap(*element, *sortedIt);
+				}
+			}
+		}
+
+		template <class Iterator, class Compare>
+		void gnome_sort(Iterator first, Iterator last, Compare comp, std::bidirectional_iterator_tag) {
+			for (Iterator it = first; it != last; ++it) {
+				for (Iterator sortedIt = it; sortedIt != first;) {
+					Iterator element = sortedIt--;
+					if (!comp(*element, *sortedIt)) {break;}
+					std::swap(*element, *sortedIt);
+				}
+			}
+		}
+	}
 }
 
 template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
@@ -322,4 +346,14 @@ void comb_sort(Iterator first, Iterator last) {
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void comb_sort(Iterator first, Iterator last, Compare comp) {
 	helper::comb::comb_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void gnome_sort(Iterator first, Iterator last) {
+	helper::gnome::gnome_sort(first, last, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void gnome_sort(Iterator first, Iterator last, Compare comp) {
+	helper::gnome::gnome_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
 }
