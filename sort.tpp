@@ -240,6 +240,56 @@ namespace helper {
 			} while(!sorted);
 		}
 	}
+
+	namespace comb {
+		constexpr float shrink_factor = 1.3f;
+
+		template <class Iterator>
+		bool bubble_sort(Iterator first, Iterator last, int gap, int size) {
+			bool sorted = true;
+			for (int i = 0; i+gap < size; ++i) {
+				if (first[i+gap] < first[i]) {
+					std::swap(first[i], first[i+gap]);
+					sorted = false;
+				}
+			}
+			return sorted;
+		}
+
+		template <class Iterator, class Compare>
+		bool bubble_sort(Iterator first, Iterator last, Compare comp, int gap, int size) {
+			bool sorted = true;
+			for (int i = 0; i+gap < size; ++i) {
+				if (comp(first[i+gap], first[i])) {
+					std::swap(first[i], first[i+gap]);
+					sorted = false;
+				}
+			}
+			return sorted;
+		}
+
+		template <class Iterator>
+		void comb_sort(Iterator first, Iterator last, std::random_access_iterator_tag) {
+			int size = std::distance(first, last);
+			int gap_size = size;
+			do {
+				gap_size /= shrink_factor;
+				bubble_sort(first, last, gap_size, size);
+			} while (gap_size > 1);
+			while(!bubble_sort(first, last, 1, size)) {}
+		}
+
+		template <class Iterator, class Compare>
+		void comb_sort(Iterator first, Iterator last, Compare comp, std::random_access_iterator_tag) {
+			int size = std::distance(first, last);
+			int gap_size = size;
+			do {
+				gap_size /= shrink_factor;
+				bubble_sort(first, last, comp, gap_size, size);
+			} while (gap_size > 1);
+			while(!bubble_sort(first, last, comp, 1, size)) {}
+		}
+	}
 }
 
 template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
@@ -261,4 +311,15 @@ void cocktail_shaker_sort(Iterator first, Iterator last) {
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void cocktail_shaker_sort(Iterator first, Iterator last, Compare comp) {
 	helper::cocktail_shaker::cocktail_shaker_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void comb_sort(Iterator first, Iterator last) {
+	helper::comb::comb_sort(first, last, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void comb_sort(Iterator first, Iterator last, Compare comp) {
+	helper::comb::comb_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
 }
