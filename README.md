@@ -5,3 +5,4 @@
 * cocktail shaker sort
 * comb sort
 * gnome sort
+* shell sort

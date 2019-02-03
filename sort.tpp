@@ -314,6 +314,46 @@ namespace helper {
 			}
 		}
 	}
+
+	namespace shell {
+		template <class Iterator>
+		void gnome_sort(Iterator first, int offset, int gap) {
+			for (int i = offset; i >= gap && first[i] < first[i-gap]; i -= gap) {
+				std::swap(first[i], first[i-gap]);
+			}
+		}
+
+		template <class Iterator, class Compare>
+		void gnome_sort(Iterator first, int offset, int gap, Compare comp) {
+			for (int i = offset; i >= gap && comp(first[i], first[i-gap]); i -= gap) {
+				std::swap(first[i], first[i-gap]);
+			}
+		}
+
+		template <class Iterator>
+		void shell_sort(Iterator first, Iterator last, std::random_access_iterator_tag) {
+			int size = std::distance(first, last);
+
+			int k = logf((5.f*size+4.f)/9.f)/logf(2.25f);
+			for (float gap = 1.8f*powf(2.25f, k)-0.8f; gap > 0.0f; gap = (gap-1.f)/2.25f) {
+				for (int j = std::ceil(gap); j < size; ++j) {
+					gnome_sort(first, j, std::ceil(gap));
+				}
+			}
+		}
+
+		template <class Iterator, class Compare>
+		void shell_sort(Iterator first, Iterator last, Compare comp, std::random_access_iterator_tag) {
+			int size = std::distance(first, last);
+
+			int k = logf((5.f*size+4.f)/9.f)/logf(2.25f);
+			for (float gap = std::ceil(1.8f*powf(2.25f, k)-0.8f); gap > 0.0f; gap = (gap-1.f)/2.25f) {
+				for (int j = gap; j < size; ++j) {
+					gnome_sort(first, j, gap, comp);
+				}
+			}
+		}
+	}
 }
 
 template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
@@ -356,4 +396,15 @@ void gnome_sort(Iterator first, Iterator last) {
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void gnome_sort(Iterator first, Iterator last, Compare comp) {
 	helper::gnome::gnome_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void shell_sort(Iterator first, Iterator last) {
+	helper::shell::shell_sort(first, last, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void shell_sort(Iterator first, Iterator last, Compare comp) {
+	helper::shell::shell_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
 }
