@@ -354,6 +354,34 @@ namespace helper {
 			}
 		}
 	}
+
+	namespace selection {
+		template <class Iterator>
+		void selection_sort(Iterator first, Iterator last, std::forward_iterator_tag) {
+			for (Iterator it = first; it != last; ++it) {
+				Iterator minElem = it;
+				for (Iterator it2 = it; it2 != last; ++it2) {
+					if (*it2 < *minElem) {
+						minElem = it2;
+					}
+				}
+				std::swap(*minElem, *it);
+			}
+		}
+
+		template <class Iterator, class Compare>
+		void selection_sort(Iterator first, Iterator last, Compare comp, std::forward_iterator_tag) {
+			for (Iterator it = first; it != last; ++it) {
+				Iterator minElem = it;
+				for (Iterator it2 = it; it2 != last; ++it2) {
+					if (comp(*it2, *minElem)) {
+						minElem = it2;
+					}
+				}
+				std::swap(*minElem, *it);
+			}
+		}
+	}
 }
 
 template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
@@ -407,4 +435,16 @@ void shell_sort(Iterator first, Iterator last) {
 template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
 void shell_sort(Iterator first, Iterator last, Compare comp) {
 	helper::shell::shell_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+
+
+template <class Iterator, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void selection_sort(Iterator first, Iterator last) {
+	helper::selection::selection_sort(first, last, typename std::iterator_traits<Iterator>::iterator_category());
+}
+
+template <class Iterator, class Compare, class = typename std::enable_if<is_iterator<Iterator>::value>::type>
+void selection_sort(Iterator first, Iterator last, Compare comp) {
+	helper::selection::selection_sort(first, last, comp, typename std::iterator_traits<Iterator>::iterator_category());
 }

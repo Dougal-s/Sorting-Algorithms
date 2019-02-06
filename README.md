@@ -6,3 +6,4 @@
 * comb sort
 * gnome sort
 * shell sort
+* selection sort
